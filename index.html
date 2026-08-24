@@ -67,6 +67,20 @@
           },
           true
         );
+        // Lazy route chunks (React.lazy / code-split pages) load well AFTER
+        // boot, once the user navigates somewhere — the two guards above only
+        // cover the initial page load, so a stale-cache mismatch discovered
+        // mid-session (e.g. opening a page whose chunk hash rotated in a later
+        // deploy) surfaced only as an uncaught promise rejection in the
+        // console, with no recovery. A failed dynamic import() never fires a
+        // captured 'error' event on a <script> element the way a static
+        // <script src> tag does, so it needs its own listener.
+        window.addEventListener('unhandledrejection', function (e) {
+          var msg = (e && e.reason && (e.reason.message || String(e.reason))) || '';
+          if (/fetch dynamically imported module|error loading dynamically imported module/i.test(msg)) {
+            recover();
+          }
+        });
         // Backstop: allow a generous window for slow networks, then check that
         // React actually mounted. If #root is still empty, treat it as blank.
         window.addEventListener('load', function () {
