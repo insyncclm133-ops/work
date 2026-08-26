@@ -2,3 +2,4 @@ weekly-summary|send-summary|{"period":"weekly"}|30 2 * * 1
 monthly-summary|send-summary|{"period":"monthly"}|30 2 1 * *
 overdue-milestones-daily|rpc:check_overdue_milestones||30 2 * * *
 rmpl-projects-sync|sync-rmpl-projects||*/15 * * * *
+rmpl-employees-sync|sync-rmpl-employees||*/15 * * * *
