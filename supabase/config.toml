@@ -390,6 +390,9 @@ verify_jwt = false
 [functions.sync-rmpl-projects]
 verify_jwt = false
 
+[functions.sync-rmpl-employees]
+verify_jwt = false
+
 # Razorpay checkout. Order + verify require a logged-in user (verify_jwt = true).
 # The webhook is called by Razorpay (no user JWT) and authenticates via its own
 # signature, so it must be public.
