@@ -87,7 +87,7 @@ export function OrgSwitcher() {
       </button>
 
       {open && (
-        <div className="absolute left-3 right-3 z-50 mt-1 rounded-md border border-sidebar-border bg-sidebar shadow-lg py-1">
+        <div className="absolute left-3 right-3 z-50 mt-1 rounded-md border border-sidebar-border bg-sidebar-background shadow-lg py-1">
           <p className="px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-sidebar-foreground/60">
             Organisations
           </p>
