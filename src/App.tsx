@@ -46,14 +46,17 @@ function ProtectedRoute({
   requireOrg?: boolean;
   requirePlatformAdmin?: boolean;
 }) {
-  const { user, isLoading, isInitialized, isAdmin, isPlatformAdmin, isTrialExpired } = useAuth();
+  const { user, isLoading, isInitialized, isAdmin, isPlatformAdmin, canUsePlatformConsole, isTrialExpired } = useAuth();
   const location = useLocation();
 
   if (!isInitialized || isLoading) return <LoadingSpinner />;
   if (!user) return <Navigate to="/auth" replace />;
 
-  // Platform-only routes require platform admin
-  if (requirePlatformAdmin && !isPlatformAdmin) {
+  // Platform-only routes require platform admin rights on the account, not
+  // that the session's active org happen to be unset — someone who holds
+  // platform_admin AND is currently working inside an org (the switcher's
+  // "Platform console" link) must still be let through.
+  if (requirePlatformAdmin && !canUsePlatformConsole) {
     return <Navigate to="/dashboard" replace />;
   }
 
