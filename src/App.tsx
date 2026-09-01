@@ -30,6 +30,16 @@ const queryClient = new QueryClient({
   },
 });
 
+/**
+ * Unknown paths bounce to "/", but Google Ads click IDs (?gclid=...) arrive
+ * on the URL — a plain `<Navigate to="/" />` drops the query string and the
+ * click can never be attributed. Preserve it across the bounce.
+ */
+function CatchAll() {
+  const location = useLocation();
+  return <Navigate to={{ pathname: '/', search: location.search }} replace />;
+}
+
 function LoadingSpinner() {
   return (
     <div className="min-h-screen flex items-center justify-center">
@@ -98,6 +108,11 @@ function AppRoutes() {
     <Routes>
       {/* Public routes */}
       <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
+      {/* Google Ads final URLs for the live search campaign — render the
+          landing page directly (no redirect) so the click's attribution
+          params are never at risk of being dropped. */}
+      <Route path="/get-started" element={user ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
+      <Route path="/track-tasks" element={user ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
       <Route path="/auth" element={user ? <Navigate to="/dashboard" replace /> : <AuthPage />} />
       <Route path="/register" element={user ? <Navigate to="/dashboard" replace /> : <OnboardingPage />} />
       <Route path="/demo" element={<Demo />} />
@@ -121,7 +136,7 @@ function AppRoutes() {
       <Route path="/platform/users" element={<ProtectedRoute requirePlatformAdmin><PlatformUsers /></ProtectedRoute>} />
       <Route path="/platform/billing" element={<ProtectedRoute requirePlatformAdmin><PlatformBilling /></ProtectedRoute>} />
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<CatchAll />} />
     </Routes>
   );
 }
